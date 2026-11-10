@@ -26,7 +26,7 @@
 
 &pro_micro_i2c {
     status = "okay";
-    clock-frequency = <100000>; /* Slowed down to 100kHz for breadboard reliability */
+    clock-frequency = <100000>;
 
     oled: ssd1306@3c {
         compatible = "solomon,ssd1306fb";
@@ -35,12 +35,12 @@
         status = "okay";
         width = <128>;
         height = <32>;
-        segment-offset = <2>; /* CRITICAL: Set to 2 for SH1106, 0 for true SSD1306 */
+        segment-offset = <0>; /* Reverted to 0 for true SSD1306 */
         page-offset = <0>;
         display-offset = <0>;
         multiplex-ratio = <31>;
         segment-remap;
-        com-invdir;
+        /* com-invdir; Removed to prevent memory flipping */
         com-sequential;
         prechargep = <0x22>;
     };
