@@ -35,12 +35,12 @@
         status = "okay";
         width = <128>;
         height = <32>;
-        segment-offset = <0>; /* Reverted to 0 for true SSD1306 */
+        segment-offset = <0>;
         page-offset = <0>;
         display-offset = <0>;
         multiplex-ratio = <31>;
         segment-remap;
-        /* com-invdir; Removed to prevent memory flipping */
+        com-invdir; /* Re-added this based on standard Zephyr configs */
         com-sequential;
         prechargep = <0x22>;
     };
