@@ -40,8 +40,8 @@
         display-offset = <0>;
         multiplex-ratio = <31>;
         segment-remap;
-        com-invdir; /* Re-added this based on standard Zephyr configs */
+        com-invdir;
         com-sequential;
-        prechargep = <0x22>;
+        prechargep = <0xF1>; /* Changed from 0x22 to match successful TinyGo init */
     };
 };
