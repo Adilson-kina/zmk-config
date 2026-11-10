@@ -1,0 +1,101 @@
+==> Kconfig.defconfig <==
+if SHIELD_TEST
+
+  config ZMK_KEYBOARD_NAME
+    default "test"
+
+endif
+
+==> Kconfig.shield <==
+config SHIELD_TEST 
+  def_bool $(shields_list_contains,test)
+
+==> test.conf <==
+# Enable display support
+CONFIG_ZMK_DISPLAY=y
+
+# Use the built-in status screen
+CONFIG_ZMK_DISPLAY_STATUS_SCREEN_BUILT_IN=y
+
+# Enable specific widgets
+CONFIG_ZMK_WIDGET_LAYER_STATUS=y
+CONFIG_ZMK_WIDGET_BATTERY_STATUS=y
+CONFIG_ZMK_WIDGET_OUTPUT_STATUS=y
+
+==> test.keymap <==
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        // Layer 0: Default Numpad (with NumLock toggle)
+        default_layer {
+            bindings = <
+                &kp KP_N7  &kp KP_N8  &kp KP_N9
+                &kp KP_N4  &kp KP_N5  &kp KP_N6
+                &kp KP_N1  &kp KP_N2  &kp KP_N3
+                &tog 1     &kp KP_N0  &kp KP_DOT  // Bottom row
+            >;
+        };
+
+        // Layer 1: Bluetooth & System (activated by bottom-left key)
+        bt_layer {
+            bindings = <
+                &kp KP_NUMLOCK &none      &bootloader
+                &none          &none      &bt BT_CLR
+                &bt BT_SEL 0   &bt BT_SEL 1 &bt BT_SEL 2
+                &tog 1         &none      &none
+            >;
+        };
+    };
+};
+
+==> test.overlay <==
+/ {
+    chosen {
+        zmk,kscan = &default_kscan;
+        zephyr,display = &oled;
+    };
+
+    default_kscan: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        label = "default_kscan";
+
+        input-gpios =
+            <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio0 2  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio0 9  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio0 6  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio0 8  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio1 0  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+            <&gpio1 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+    };
+};
+
+&pro_micro_i2c {
+    status = "okay";
+    clock-frequency = <400000>;
+
+    oled: ssd1306@3c {
+        compatible = "solomon,ssd1306fb";
+        reg = <0x3c>;
+        width = <128>;
+        height = <32>;
+        segment-offset = <0>;
+        page-offset = <0>;
+        display-offset = <0>;
+        multiplex-ratio = <31>;
+        segment-remap;
+        com-invdir;
+        com-sequential;
+        prechargep = <0x22>;
+    };
+};
