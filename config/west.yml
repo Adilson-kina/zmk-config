@@ -7,7 +7,7 @@ manifest:
   projects:
     - name: zmk
       remote: zmkfirmware
-      revision: main
+      revision: v0.3.0 # Pinned to a stable version for compatibility
       import: app/west.yml
     - name: zmk-nice-oled
       remote: mctechnology17
